@@ -1,0 +1,134 @@
+The simplest command:
+
+cd /home/neon/code/gardenworld
+npm run build
+pm2 start npm --name gardenworld -- run preview
+
+That starts it and keeps it running (PM2 restarts it if it crashes).
+
+To check it:
+
+pm2 status
+
+App will be at http://localhost:4173/.
+
+If you want it reachable from other machines:
+
+pm2 start npm --name gardenworld -- run preview -- --host
+
+
+
+
+pm2 start ecosystem.config.cjs
+
+4. Make it survive reboots (“always run”)
+
+pm2 save
+pm2 startup
+
+pm2 startup prints a sudo ... command — run that once. After that, PM2 restores your saved processes on boot.
+
+5. Useful PM2 commands
+
+pm2 status              # is it running?
+pm2 logs gardenworld    # tail logs
+pm2 restart gardenworld # after npm run build
+pm2 stop gardenworld
+pm2 delete gardenworld
+
+Deploy workflow
+
+Whenever you update the app:
+
+npm run build
+pm2 restart gardenworld
+
+───
+
+Note: vite preview is fine for a small internal server, but it’s not ideal for heavy production traffic. For a real production setup, switch to @sveltejs/adapter-node and run the generated Node server under PM2 instead. For local or light always-on hosting, the steps above work well.
+
+I can add ecosystem.config.cjs to the repo and wire up a npm run preview:pm2 script if you want.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Update system
+sudo apt update && sudo apt upgrade -y
+
+# Install curl if not present
+sudo apt install curl -y
+
+# Add NodeSource repository (Node.js 20 LTS - recommended)
+curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+
+# Install Node.js
+sudo apt install nodejs -y
+
+# Verify installation
+node --version
+npm --version
+
+
+sudo npm install -g pm2
+
+
+pm2 --version
+
+
+pm2 startup
+
+pm2 save
+
+Basic PM2 Commands
+Command
+Description
+pm2 start app.js
+Start an app
+pm2 start app.js --name api
+Start with custom name
+pm2 list
+Show all running processes
+pm2 stop app_name
+Stop a process
+pm2 restart app_name
+Restart a process
+pm2 delete app_name
+Remove from PM2
+pm2 logs
+Show logs of all apps
+pm2 monit
+Real-time monitoring dashboard
+pm2 save
+Save current processes
+
+
+
+
+pm2 start server.js --name "my-app"
+pm2 startup
+pm2 save
+
+
+npm run build
