@@ -1,0 +1,52 @@
+Configuration backup 06/26/2026
+
+
+
+server {
+    listen 80;
+    listen 443 ssl;
+
+    server_name clonebazaar.com;
+
+    # Optional: Configure strong protocols
+
+
+    # Path to the combined certificate file (server cert + intermediate bundle)
+    ssl_certificate /etc/ssl/certs/clonebazaar/clonebazaar.com_ssl_certificate.cer;
+
+    # Path to the private key file
+    ssl_certificate_key /etc/ssl/certs/clonebazaar/_.clonebazaar.com_private_key.key;
+
+    # Optional: Configure strong protocols
+    ssl_protocols TLSv1.2 TLSv1.3;
+
+
+
+    # Optional: Redirect www to non-www (or remove if you prefer the opposite)
+    # if ($host = 'www.gardenworld.com') {
+    #     return 301 http://gardenworld.com$request_uri;
+    # }
+
+    # Reverse Proxy - Main application
+    location / {
+        proxy_pass http://localhost:4173;          # Change this to your backend
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # Optional but recommended timeouts
+        proxy_read_timeout 300;
+        proxy_connect_timeout 75;
+        proxy_send_timeout 300;
+    }
+
+    # Your existing status page (kept unchanged)
+    location /nginx_status {
+        stub_status on;
+        access_log off;
+        allow 127.0.0.1;
+        allow ::1;
+        deny all;
+    }
+}
